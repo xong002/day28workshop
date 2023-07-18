@@ -44,4 +44,5 @@ public class GameRepository {
         return aggregate.getMappedResults();
     }
 
+    
 }

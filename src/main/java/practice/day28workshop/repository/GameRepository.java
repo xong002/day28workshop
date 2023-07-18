@@ -36,7 +36,7 @@ public class GameRepository {
         }
         ])
      */
-    public List<Document> getGameWithCommentsByGameId(int id){
+    public List<Document> getGameByGameId(int id){
         MatchOperation matchOp = Aggregation.match(Criteria.where("gid").is(id));
         LookupOperation lookupOp = Aggregation.lookup(C_COMMENTS, "gid", "gid", "reviews");
         Aggregation pipeline = Aggregation.newAggregation(matchOp, lookupOp);

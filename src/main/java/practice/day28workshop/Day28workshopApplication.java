@@ -20,7 +20,7 @@ public class Day28workshopApplication implements CommandLineRunner{
 	}
 	@Override
 	public void run(String... args) throws Exception {
-		List<Document> result = gameRepo.getGameWithCommentsByGameId(2);
+		List<Document> result = gameRepo.getGameByGameId(2);
 		for (Document d : result){
 			System.out.println(d.toString());
 		}

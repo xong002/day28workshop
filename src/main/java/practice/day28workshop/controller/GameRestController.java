@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.json.JsonObject;
 import practice.day28workshop.model.Game;
 import practice.day28workshop.model.GameWithRating;
 import practice.day28workshop.model.RatingDisplay;
 import practice.day28workshop.service.GameService;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class GameRestController {
     
     @Autowired
@@ -32,7 +31,7 @@ public class GameRestController {
     }
 
     @GetMapping("/games/{sortedBy}")
-    public ResponseEntity<RatingDisplay> getGamesSortedByRating(@PathVariable String sortedBy){
+    public ResponseEntity<List<GameWithRating>> getGamesSortedByRating(@PathVariable String sortedBy){
         Boolean sort;
         if (sortedBy.equals("highest")){
             sort = true;
@@ -41,10 +40,13 @@ public class GameRestController {
         } else return ResponseEntity.badRequest().build();  
 
         List<GameWithRating> result = gameService.getGamesSortedByRating(sort);
-        RatingDisplay r = new RatingDisplay(sortedBy, result, new Date());
+        // RatingDisplay r = new RatingDisplay(sortedBy, result, new Date());
+        // // JsonObject result = gameService.getGamesSortedByRating(sort);
+        return ResponseEntity.ok().body(result);
+    }
 
-        // JsonObject result = gameService.getGamesSortedByRating(sort);
-        return ResponseEntity.ok().body(r);
-
+    @GetMapping("/games")
+    public List<Game> getGameList(){
+        return gameService.getGameList();
     }
 }

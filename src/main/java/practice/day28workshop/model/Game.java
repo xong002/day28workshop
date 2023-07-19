@@ -24,6 +24,15 @@ public class Game {
     private List<String> reviews;
     private Date timestamp;
 
+    
+
+    public Game(String name, String url) {
+        this.name = name;
+        this.url = url;
+    }
+
+
+
     public void toGame(Document doc) {
         this.id = doc.getInteger("gid");
         this.name = doc.getString("name");

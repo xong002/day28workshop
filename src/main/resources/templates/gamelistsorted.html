@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game List (sorted)</title>
+</head>
+<body>
+    <table>
+        <tr data-th-each="game : ${gameList}">
+            <td data-th-text="${game.name}"></td>
+            <td data-th-text="${game.rating}"></td>
+        </tr>
+
+    </table>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package practice.day28workshop.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
@@ -10,7 +11,10 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+
+import practice.day28workshop.model.Game;
 
 @Repository
 public class GameRepository {
@@ -21,22 +25,22 @@ public class GameRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    /* 
+    /*
      * db.games.aggregate([
-        {
-            $match: { gid: 2}
-        },
-        {
-            $lookup: {
-                from: 'comments',
-                foreignField: 'gid',
-                localField: 'gid',
-                as: 'reviews'
-            }
-        }
-        ])
+     * {
+     * $match: { gid: 2}
+     * },
+     * {
+     * $lookup: {
+     * from: 'comments',
+     * foreignField: 'gid',
+     * localField: 'gid',
+     * as: 'reviews'
+     * }
+     * }
+     * ])
      */
-    public List<Document> getGameByGameId(int id){
+    public List<Document> getGameByGameId(int id) {
         MatchOperation matchOp = Aggregation.match(Criteria.where("gid").is(id));
         LookupOperation lookupOp = Aggregation.lookup(C_COMMENTS, "gid", "gid", "reviews");
         Aggregation pipeline = Aggregation.newAggregation(matchOp, lookupOp);
@@ -44,5 +48,22 @@ public class GameRepository {
         return aggregate.getMappedResults();
     }
 
-    
+    public List<Game> getGameList(){
+        Query query = new Query();
+
+        query.fields()
+        .include("name","url")
+        .exclude("_id");
+
+        List<Document> result = mongoTemplate.find(query, Document.class, C_GAMES);
+
+        List<Game> gameList = new ArrayList<>();
+        for (Document d : result){
+            Game game = new Game(d.getString("name"), d.getString("url"));
+            gameList.add(game);
+        }
+
+        return gameList;
+    }
+
 }

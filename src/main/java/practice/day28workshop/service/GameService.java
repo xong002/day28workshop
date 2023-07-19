@@ -28,6 +28,10 @@ public class GameService {
     @Autowired
     private CommentRepository commentRepo;
 
+    public List<Game> getGameList(){
+        return gameRepo.getGameList();
+    }
+
     public Optional<Game> getGameByGameId(int id){
         List<Document> result = gameRepo.getGameByGameId(id);
         if (result.isEmpty()){

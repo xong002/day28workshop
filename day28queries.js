@@ -11,7 +11,7 @@ db.games.find(
 
 db.comments.find(
 {
-    gid: 2
+    gid: 162120
 }
 )
 
@@ -114,5 +114,6 @@ db.comments.aggregate([
         localField: '_id',
         as: 'game'
     }
-}
+},
+{ $limit : 5 }
 ])

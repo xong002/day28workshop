@@ -10,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import practice.day28workshop.model.Game;
 import practice.day28workshop.model.GameWithRating;
-import practice.day28workshop.model.RatingDisplay;
 import practice.day28workshop.service.RestService;
 
 @Controller

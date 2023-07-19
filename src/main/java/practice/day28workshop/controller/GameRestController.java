@@ -1,6 +1,5 @@
 package practice.day28workshop.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import practice.day28workshop.model.Game;
 import practice.day28workshop.model.GameWithRating;
-import practice.day28workshop.model.RatingDisplay;
 import practice.day28workshop.service.GameService;
 
 @RestController

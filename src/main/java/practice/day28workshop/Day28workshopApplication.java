@@ -24,7 +24,7 @@ public class Day28workshopApplication implements CommandLineRunner{
 	}
 	@Override
 	public void run(String... args) throws Exception {
-		List<Document> result = commentRepo.getGamesSortedByRating(true);
+		List<Document> result = gameRepo.getGameReviews(5);
 		System.out.println(result.get(0).toString());
 		// for (Document d : result){
 		// 	System.out.println(d.toString());

@@ -1,17 +1,18 @@
 use bgg
 
-db.getCollection("games").find({})
+db.getCollection("games").find({
+})
 
 
 db.games.find(
 {
-    gid: 2
+    name: { $regex: "lord of the rings", $options: "i"}
 }
 )
 
 db.comments.find(
 {
-    gid: 162120
+    gid: 7467
 }
 )
 
@@ -73,26 +74,36 @@ db.games.aggregate([
 }])
 
 
-
-//not working
+//to project nested array into single value array AND manipulate($map) each item in array
 db.games.aggregate([
 {
-    $match: { gid: 2}
+    $match: { gid: 5}
 },
 {
     $lookup: {
         from: 'comments',
-        pipeline: [
-            { $project: {
-                $concat : [
-                "/review/", "$c_id"
-                ]
-            }
-                 }
-        ],
-        as: 'reviews'
+        foreignField: 'gid',
+        localField: 'gid',
+        as: 'comments'
     }
-}])
+}
+,{ $project: { 
+    _id: 0,
+    gid: 1,
+    name: 1,
+    year: 1,
+    rank: "$ranking",
+    users_rated: 1,
+    url: 1,
+    thumbnail: "$image",
+    reviews: { $map: {
+        input: "$comments.c_id",
+        as: "c_id",
+        in: { $concat: ["/review/", "$$c_id"]}
+        } }
+//    reviews: "$comments.c_id" //for single value array
+    }}
+])
 
 //sort then group to use $first, then lookup to join table
 db.comments.aggregate([
@@ -114,6 +125,49 @@ db.comments.aggregate([
         localField: '_id',
         as: 'game'
     }
-},
-{ $limit : 5 }
+}
+//,{ $unwind: "$game"} // to change array to object
+//,{ $replaceRoot: { newRoot: { $mergeObjects: [ {gameName: "$game.name"}, "$$ROOT"]}}} // to return single value from object to root level
+,{ $replaceRoot: {newRoot: {$mergeObjects: [ {$arrayElemAt: ["$game", 0]}, "$$ROOT"]}}} // to return all values from first object in array to root level (no need to unwind)
+,{ $limit : 5 }
+,{ $project: {"game": 0}}
 ])
+
+
+// -----------------------Insert, Update, Upsert------------------------------
+
+db.comments.find( { 
+//    _id: ObjectId("64b7d6be6d4381ca2c27cee5")
+//    gid: 2
+    c_id: 1234567
+})
+
+db.comments.insert(
+{
+    user: "test user",
+    c_text: "test comments",
+    c_id: 123456,
+    gid: 2
+}
+)
+
+db.comments.updateOne(
+{
+    _id: ObjectId("64b7d6be6d4381ca2c27cee5")
+},
+{
+    $currentDate : {timestamp: true },
+    $max: {rating: 1} 
+}
+)
+
+db.comments.update(
+{
+    c_id: 1234567
+},{
+    $currentDate: {timestamp: true},
+    $set: {rating: 5},
+    $set: {gid: 2}
+}
+,{ upsert: true}    
+)
